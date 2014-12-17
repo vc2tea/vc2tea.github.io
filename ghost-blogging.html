@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh"
+>
+<head>
+    <title>Ghost Blogging - 綠茶如是说</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="/ghost-blogging">
+
+        <meta name="author" content="綠茶" />
+        <meta name="keywords" content="ghost,nginx,nodejs" />
+        <meta name="description" content="Ghost 是基于 Node.js 的博客系统，这个博客就是利用 Ghost 搭建的，详细的介绍就不写了，下面记录下相关的流程，算是备忘 首先肯定是安装 Node.js 环境，由于我用的是 debian 7.5，所以将 Node.js 的 source list 加进来并安装，当然还有 sqlite 3 curl -sL https://deb.nodesource.com/setup | sudo bash - apt-get install nodejs apt-get install sqlite3 接下来就是从 ghost 官网下载最新的压缩包并解压，通过 npm install ..." />
+
+    <!-- Enable latex plugin -->
+
+
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments/native.css" rel="stylesheet">
+    <link rel="stylesheet" href="/theme/css/style.css" type="text/css"/>
+
+
+
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="/" class="navbar-brand">
+綠茶如是说            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="/ghost-blogging"
+                       rel="bookmark"
+                       title="Permalink to Ghost Blogging">
+                        Ghost Blogging
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-08-11T18:28:00+08:00"> 2014-08-11(周一)</time>
+    </span>
+
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="/tag/ghost.html">ghost</a>
+        /
+	<a href="/tag/nginx.html">nginx</a>
+        /
+	<a href="/tag/nodejs.html">nodejs</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p><a href="http://docs.ghost.org/">Ghost</a> 是基于 <a href="http://nodejs.org/">Node.js</a> 的博客系统，这个博客就是利用 Ghost 搭建的，详细的介绍就不写了，下面记录下相关的流程，算是备忘</p>
+<p>首先肯定是安装 Node.js 环境，由于我用的是 debian 7.5，所以将 Node.js 的 source list 加进来并安装，当然还有 sqlite 3</p>
+<div class="highlight"><pre>curl -sL https://deb.nodesource.com/setup | sudo bash -
+apt-get install nodejs
+apt-get install sqlite3
+</pre></div>
+
+
+<p>接下来就是从 ghost 官网下载最新的压缩包并解压，通过 <code>npm install --production</code> 来安装了，但是这个过程中遇到 debian 的 <code>glib</code> 版本问题，通过安装 tesing 的 <code>libc6-dev</code> 解决</p>
+<div class="highlight"><pre>echo &#39;deb http://ftp.debian.org/debian testing main&#39; | sudo tee -a /etc/apt/sources.list
+sudo apt-get update
+sudo apt-get -t testing install libc6-dev
+</pre></div>
+
+
+<p>这个时候基本就完工了，修改下 <code>config.js</code> 就可以用 <code>npm start --production</code> 来启动了</p>
+<p>当然如果是需要作为 deamon 来运行的，要用 <code>forever</code> 或 <code>pm2</code> 这样的工具来执行，我用的是 <code>pm2</code> ，安装 <code>npm install -g pm2</code> ，运行的话使用 <code>NODE_ENV=production pm2 start index.js --name ghost</code> ，这样就可以在 daemon 的情况下启动了</p>
+<p>我们一般还习惯用 <code>nginx</code> 来做反向代理的，所以安装一下，我默认安装的版本是 1.6.0 ，当然 其他版本的配置也是大同小异，在 <code>/etc/nginx/conf.d/</code> 下面创建一个 <code>ghost.conf</code> 文件之类的，加上反向代理的配置就可以了，最简单的配置类似这样的</p>
+<div class="highlight"><pre><span class="nt">server</span> <span class="p">{</span>
+    <span class="n">listen</span>       <span class="m">80</span><span class="p">;</span>
+    <span class="n">server_name</span>  <span class="n">vc2tea</span><span class="o">.</span><span class="n">com</span><span class="p">;</span> <span class="err">#这里是域名设置</span>
+
+    <span class="n">location</span> <span class="o">/</span> <span class="err">{</span>
+        <span class="n">proxy_pass</span>   <span class="n">http</span><span class="o">://</span><span class="m">127</span><span class="o">.</span><span class="m">0</span><span class="o">.</span><span class="m">0</span><span class="o">.</span><span class="m">1</span><span class="o">:</span><span class="m">10000</span><span class="p">;</span> <span class="err">#改成</span> <span class="n">ghost</span> <span class="err">的端口号</span>
+
+        <span class="n">proxy_redirect</span> <span class="n">off</span><span class="p">;</span>
+        <span class="n">proxy_set_header</span> <span class="n">Host</span> <span class="err">$</span><span class="n">host</span><span class="p">;</span>
+        <span class="n">proxy_set_header</span> <span class="n">X</span><span class="o">-</span><span class="n">Real</span><span class="o">-</span><span class="n">IP</span> <span class="err">$</span><span class="n">remote_addr</span><span class="p">;</span>
+        <span class="n">proxy_set_header</span> <span class="n">X</span><span class="o">-</span><span class="n">Forwarded</span><span class="o">-</span><span class="n">For</span> <span class="err">$</span><span class="n">proxy_add_x_forwarded_for</span><span class="p">;</span>
+    <span class="p">}</span>
+
+<span class="err">}</span>
+</pre></div>
+
+
+<p>Then , enjoy yourself !</p>
+            </div>
+            <!-- /.entry-content -->
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3 well well-sm" id="sidebar">
+
+<aside>
+    <section>
+        <ul class="list-group list-group-flush">
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+                  <ul class="list-group" id="social">
+                    <li class="list-group-item"><a href="https://twitter.com/vc2tea"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+                  </ul>
+                </li>
+
+
+
+                <li class="list-group-item"><a href="/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                    <ul class="list-group " id="tags">
+                        <li class="list-group-item tag-1">
+                            <a href="/tag/redis.html">
+                                redis
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="/tag/nginx.html">
+                                nginx
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/nodejs.html">
+                                nodejs
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/virtualenv.html">
+                                virtualenv
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/security.html">
+                                security
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/pip.html">
+                                pip
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/mutex.html">
+                                mutex
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/gfw.html">
+                                gfw
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/uwsgi.html">
+                                uwsgi
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/python.html">
+                                python
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/django.html">
+                                django
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/ghost.html">
+                                ghost
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/pillow.html">
+                                pillow
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/cache.html">
+                                cache
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/session.html">
+                                session
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/shadowsocks.html">
+                                shadowsocks
+                            </a>
+                        </li>
+                    </ul>
+                </li>    
+
+
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://getpelican.com/" target="_blank">
+                Pelican
+            </a>
+        </li>
+      </ul>
+    </li>
+
+        </ul>
+    </section>
+
+</aside>        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2014 綠茶
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="/theme/js/respond.min.js"></script>
+
+</body>
+</html>

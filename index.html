@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh"
+>
+<head>
+    <title>綠茶如是说</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="">
+        <meta name="author" content="綠茶" />
+
+    <!-- Enable latex plugin -->
+
+
+    <!-- Open Graph tags -->
+        <meta property="og:site_name" content="綠茶如是说" />
+        <meta property="og:type" content="website"/>
+        <meta property="og:title" content="綠茶如是说"/>
+        <meta property="og:url" content=""/>
+        <meta property="og:description" content="綠茶如是说"/>
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments/native.css" rel="stylesheet">
+    <link rel="stylesheet" href="/theme/css/style.css" type="text/css"/>
+
+
+
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="/" class="navbar-brand">
+綠茶如是说            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+            <article>
+                <h2><a href="/whats-shadowsocks">写给非专业人士看的 Shadowsocks 简介</a></h2>
+                <div class="summary"><p>这个文章来源于一个朋友在科学上网的过程中，搞不清楚 Shadowsocks 的配置问题，在这里我想按照我对 Shadowsocks 的理解简单梳理一下，以便一些非专业人士也能了解</p>
+<h3>long long ago...</h3>
+<p>在很久很久以前，我们访问各种网站都是简单而直接的，用户的请求通过互联网发送到服务提供方，服务提供方直接将信息反馈给用户
+<img alt="ss-01" src="/static/images/whats-shadowsocks-01.png" /></p>
+<h3>when evil comes</h3>
+<p>然后有一天，<a href="http://zh.wikipedia.org/wiki/%E9%87%91%E7%9B%BE%E5%B7%A5%E7%A8%8B">GFW</a> 就出现了，他像一个收过路费的强盗一样夹在了在用户和服务之间，每当用户需要获取信息，都经过了 GFW，GFW将它不喜欢的内容统统过滤掉，于是客户当触发 GFW 的过滤规则的时候，就会收到 <code>Connection Reset</code> 这样的响应内容，而无法接收到正常的内容
+<img alt="ss-02" src="/static/images/whats-shadowsocks-02.png" /></p>
+<h3>ssh tunnel</h3>
+<p>聪明的人们想到了利用境外服务器代理的方法来绕过 GFW 的过滤，其中包含了各种HTTP代理服务、Socks服务、VPN服务... 其中以 ssh tunnel 的方法比较有代表性</p>
+<p>1) 首先用户和境外服务器基于 ssh 建立起一条加密的通道 ...</p>
+                    <a class="btn btn-default btn-xs" href="/whats-shadowsocks">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="/redis-static-file-cache">用 Redis 缓存静态文件</a></h2>
+                <div class="summary"><p>一般网站为了缓解服务器的资源消耗，会将一些包含动态内容并且访问量特别大的页面（比如首页），采用静态化的手段来进行优化。</p>
+<p>最传统的做法就是通过定期执行的后台进程，将动态内容抓取出来，生成一个 html / inc 文件存放在文件系统中，然后在首页中用各种语言的 include 语法将静态的内容包含进去。</p>
+<p>这种做法存在以下几个问题：</p>
+<ul>
+<li>include 静态文件，一旦文件不存在，页面往往会直接报错</li>
+<li>随着网站的发展，这些生成的小文件可能会越来越多，同时旧的小文件也可以有些直接被废弃掉了，管理这些小文件难度大</li>
+<li>当服务器不只一台的情况下，这些小文件还需要考虑实时同步的问题</li>
+</ul>
+<h3>解决方案</h3>
+<p>没错，还是利用 Redis，聪明的朋友可能一下子就能想到为什么了，不过还是让我详细再说明下吧。</p>
+<ol>
+<li>还是采用后台程序将动态的内容静态化，但是这次静态化的目标不是生成静态文件，而是将静态文件的内容保存在 Redis 中</li>
+<li>给生成的 Redis 内容加上一个合理的生存期，比如这个静态内容是每天生成的，可以设置生存期为5天，如果这个内容确实是活的话，那进程会一直保证这个内容是存在的，一旦进程被废弃掉了，内容在5天后也会自动被清理掉，无需人工干预</li>
+<li>页面中不再采用 include 的方式，而是直接读取对应 Redis ...</li></ol>
+                    <a class="btn btn-default btn-xs" href="/redis-static-file-cache">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="/redis-mutex">用 Redis 实现互斥锁</a></h2>
+                <div class="summary"><p>在<a href="http://zh.wikipedia.org/wiki/多线程">多线程</a>执行的程序下，无可避免的会遇到资源竞争的问题，为了解决资源竞争的问题，引入<a href="http://zh.wikipedia.org/wiki/互斥锁">互斥锁</a>应该是公认的解决方案吧，而 Redis 的特性（基于内存，有生存期）我觉得非常适合用来实现互斥锁。</p>
+<h3>背景</h3>
+<p>我遇到的问题是在对 <a href="https://lucene.apache.org">Lucene</a> 更新索引的时候，原来采取的策略是将某个数据表增量的数据通过一个线程定期去更新和 flush 索引文件，但由于业务的扩展，原来的业务变成了从2个不同的数据表用2个不同的定期线程去更新。</p>
+<p>这个时候问题来了，在 flush 到文件系统中的时候，虽然 Lucene 本身创建了一个 <code>write.lock</code> 来避免文件冲突，但是由于线程中运行的程序在 flush 过程中可能因为异常导致线程直接中断，导致 <code>write.lock</code> 文件没有被及时清除和处理，后续的索引更新线程全部作废。</p>
+<h3>解决方案</h3>
+<p>虽然原则上这应该是线程异常处理范畴的问题，不过同时存在下面这2个问题</p>
+<ul>
+<li><code>write.lock</code> 文件没有被及时释放</li>
+<li>如果使用程序全局变量的锁又无法很好地管理和监测</li>
+</ul>
+<p>而利用 Redis ...</p>
+                    <a class="btn btn-default btn-xs" href="/redis-mutex">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="/redis-session">用 Redis 模拟 session</a></h2>
+                <div class="summary"><p><a href="http://redis.io/">Redis</a> 是一个强大而简单的键值型数据库，之前在公司网站改版的过程中大量使用 Redis 来处理一些特殊的需求，我希望能将自己对 Redis 的使用经验都分享出来，而这里算是第一篇吧。</p>
+<h3>背景</h3>
+<p>项目是一个有着不小访问量的网站，为了达到分流的作用，网站按照不同的业务（个人、企业、后台、营销、搜索、API等）区分成不同的子域名，而子域名下运行的是不同的实例。</p>
+<p>对用户登录这块的逻辑，原来的做法是将登录的明文信息（登录ID、用户名、姓名等）在登录过程中直接写入用户 cookie，当需要进行登录校验的时候，后台直接取出 cookie 中保存的ID进行处理。可以想象，这样的模式只要模拟或者盗取了客户端的 cookie 信息，对于客户来说几乎没有任何安全性的保障。</p>
+<p>由于用户的操作可能跨越多个实例，如果采用服务器 session 的机制的话，就需要解决 session 的共享问题，从技术的实现角度来说可能碰到的坑就更多了，于是我们利用了 Redis 来模拟服务器的 session。</p>
+<h3>实际设计 ...</h3>
+                    <a class="btn btn-default btn-xs" href="/redis-session">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="/django-maintain">Django 项目维护记</a></h2>
+                <div class="summary"><p>近来由于工作需要，所以需要接手几个用 <a href="https://www.djangoproject.com">Django</a> 编写的网站项目，虽然一直对 <a href="https://www.python.org/">Python</a> 有好感，但毕竟作为工作上的项目还是真正的第一次接触，其中遇到了一些问题总算花了几天的时间搞清楚了，在此分享一下</p>
+<h3>pip 和 virtualenv</h3>
+<p><a href="https://pip.pypa.io/en/latest/">pip</a> 已经作为 Python 的标准包管理工具了，安装自不用说，这里说一下全局配置中的 download cache，创建 <code>~/.pip/pip.conf</code> 文件，内容为</p>
+<div class="highlight"><pre><span class="k">[global]</span>
+<span class="na">download-cache</span><span class="o">=</span><span class="s">~/.pip/cache</span>
+</pre></div>
+
+
+<p>这样就能在使用 <code>pip install</code> 的时候将下载回来的文件缓存起来了，由于我维护的多个系统使用类似的包，这样就省得每次创建新环境的时候重新去下载了</p>
+<p><a href="http://virtualenv.readthedocs.org/en/latest/">virtualenv</a> 也是大名鼎鼎的虚拟环境工具了，在同一台机器上运行多个环境，为了避免第三方包的冲突，将第三方包的环境隔离出来管理更方便，用处基本上是这几个</p>
+<div class="highlight"><pre>~/.virtualenvs/virtualenv env_name
+source ~/.virtualenvs/env_name/bin ...</pre></div>
+                    <a class="btn btn-default btn-xs" href="/django-maintain">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="/ghost-blogging">Ghost Blogging</a></h2>
+                <div class="summary"><p><a href="http://docs.ghost.org/">Ghost</a> 是基于 <a href="http://nodejs.org/">Node.js</a> 的博客系统，这个博客就是利用 Ghost 搭建的，详细的介绍就不写了，下面记录下相关的流程，算是备忘</p>
+<p>首先肯定是安装 Node.js 环境，由于我用的是 debian 7.5，所以将 Node.js 的 source list 加进来并安装，当然还有 sqlite 3</p>
+<div class="highlight"><pre>curl -sL https://deb.nodesource.com/setup | sudo bash -
+apt-get install nodejs
+apt-get install sqlite3
+</pre></div>
+
+
+<p>接下来就是从 ghost 官网下载最新的压缩包并解压，通过 <code>npm install ...</code></p>
+                    <a class="btn btn-default btn-xs" href="/ghost-blogging">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="/first">綠茶，你还想说什么？</a></h2>
+                <div class="summary"><p>重新开 Blog，按照惯例，免不了有些碎碎念，姑且记录下来吧。</p>
+<p>算了一下这已经是纯属个人胡言乱语的第4个 Blog 了，她的前辈们到底经历了一些什么东西呢，让我再好好回想一下黑历史</p>
+<ul>
+<li>06-07年，正值毕业季的当时写博客大概是一种潮流吧，于是在 Blogcn 上也凑了下热闹，记录下毕业的青涩和刚入职场的点点滴滴，可惜 Blogcn 历经多次变更，最原始的这些内容早已经不存在于比特世界了吧</li>
+<li>07年中，由于对 Google 图腾的信仰，将阵地迁移到 Blogspot 去了，可惜由于07年的 GFW 开始肆虐，更多的内容是关于互联网上各种优秀的东西封与被封的记录和吐槽，从此对 GFW 深恶痛绝... 除此以外大概就是一些动画的点评和分享，于是「一入宅门深似海，从此节操是路人了」... </li>
+<li>08-09年，玩心又被当时流行的 Wordpress 吸引住了，于是在 HostMonster 买了个便宜的虚拟主机，踏上了各种折腾的旅程，这个时期各种碎碎念都会写一篇东西记录下来，用现在的词汇来说这段时间就是装逼＋文艺逼＋二逼的混合体吧 ...</li></ul>
+                    <a class="btn btn-default btn-xs" href="/first">more ...</a>
+                </div>
+            </article>
+            <hr/>
+
+        </div>
+        <div class="col-sm-3 well well-sm" id="sidebar">
+
+<aside>
+    <section>
+        <ul class="list-group list-group-flush">
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+                  <ul class="list-group" id="social">
+                    <li class="list-group-item"><a href="https://twitter.com/vc2tea"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+                  </ul>
+                </li>
+
+
+
+                <li class="list-group-item"><a href="/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                    <ul class="list-group " id="tags">
+                        <li class="list-group-item tag-1">
+                            <a href="/tag/redis.html">
+                                redis
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="/tag/nginx.html">
+                                nginx
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/nodejs.html">
+                                nodejs
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/virtualenv.html">
+                                virtualenv
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/security.html">
+                                security
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/pip.html">
+                                pip
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/mutex.html">
+                                mutex
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/gfw.html">
+                                gfw
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/uwsgi.html">
+                                uwsgi
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/python.html">
+                                python
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/django.html">
+                                django
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/ghost.html">
+                                ghost
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/pillow.html">
+                                pillow
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/cache.html">
+                                cache
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/session.html">
+                                session
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/shadowsocks.html">
+                                shadowsocks
+                            </a>
+                        </li>
+                    </ul>
+                </li>    
+
+
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://getpelican.com/" target="_blank">
+                Pelican
+            </a>
+        </li>
+      </ul>
+    </li>
+
+        </ul>
+    </section>
+
+</aside>        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2014 綠茶
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="/theme/js/respond.min.js"></script>
+
+</body>
+</html>

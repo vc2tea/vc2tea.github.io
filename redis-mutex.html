@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh"
+>
+<head>
+    <title>用 Redis 实现互斥锁 - 綠茶如是说</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="/redis-mutex">
+
+        <meta name="author" content="綠茶" />
+        <meta name="keywords" content="redis,mutex" />
+        <meta name="description" content="在多线程执行的程序下，无可避免的会遇到资源竞争的问题，为了解决资源竞争的问题，引入互斥锁应该是公认的解决方案吧，而 Redis 的特性（基于内存，有生存期）我觉得非常适合用来实现互斥锁。 背景 我遇到的问题是在对 Lucene 更新索引的时候，原来采取的策略是将某个数据表增量的数据通过一个线程定期去更新和 flush 索引文件，但由于业务的扩展，原来的业务变成了从2个不同的数据表用2个不同的定期线程去更新。 这个时候问题来了，在 flush 到文件系统中的时候，虽然 Lucene 本身创建了一个 write.lock 来避免文件冲突，但是由于线程中运行的程序在 flush 过程中可能因为异常导致线程直接中断，导致 write.lock 文件没有被及时清除和处理，后续的索引更新线程全部作废。 解决方案 虽然原则上这应该是线程异常处理范畴的问题，不过同时存在下面这2个问题 write.lock 文件没有被及时释放 如果使用程序全局变量的锁又无法很好地管理和监测 而利用 Redis ..." />
+
+    <!-- Enable latex plugin -->
+
+
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="/theme/css/pygments/native.css" rel="stylesheet">
+    <link rel="stylesheet" href="/theme/css/style.css" type="text/css"/>
+
+
+
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="/" class="navbar-brand">
+綠茶如是说            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="/redis-mutex"
+                       rel="bookmark"
+                       title="Permalink to 用 Redis 实现互斥锁">
+                        用 Redis 实现互斥锁
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-09-03T07:46:00+08:00"> 2014-09-03(周三)</time>
+    </span>
+
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="/tag/redis.html">redis</a>
+        /
+	<a href="/tag/mutex.html">mutex</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>在<a href="http://zh.wikipedia.org/wiki/多线程">多线程</a>执行的程序下，无可避免的会遇到资源竞争的问题，为了解决资源竞争的问题，引入<a href="http://zh.wikipedia.org/wiki/互斥锁">互斥锁</a>应该是公认的解决方案吧，而 Redis 的特性（基于内存，有生存期）我觉得非常适合用来实现互斥锁。</p>
+<h3>背景</h3>
+<p>我遇到的问题是在对 <a href="https://lucene.apache.org">Lucene</a> 更新索引的时候，原来采取的策略是将某个数据表增量的数据通过一个线程定期去更新和 flush 索引文件，但由于业务的扩展，原来的业务变成了从2个不同的数据表用2个不同的定期线程去更新。</p>
+<p>这个时候问题来了，在 flush 到文件系统中的时候，虽然 Lucene 本身创建了一个 <code>write.lock</code> 来避免文件冲突，但是由于线程中运行的程序在 flush 过程中可能因为异常导致线程直接中断，导致 <code>write.lock</code> 文件没有被及时清除和处理，后续的索引更新线程全部作废。</p>
+<h3>解决方案</h3>
+<p>虽然原则上这应该是线程异常处理范畴的问题，不过同时存在下面这2个问题</p>
+<ul>
+<li><code>write.lock</code> 文件没有被及时释放</li>
+<li>如果使用程序全局变量的锁又无法很好地管理和监测</li>
+</ul>
+<p>而利用 Redis 的特性去实现互斥锁可以很好地解决这2个问题，原理非常简单</p>
+<ol>
+<li>需要加锁的时候，生成一个 lock_key，expire time 设置为估计该线程执行大概的时间，内容可以是空也可以将是哪个线程或什么时候产生的信息放到内容中</li>
+<li>锁的判定，判定上面生成的 lock_key 是否存在</li>
+<li>线程资源竞争的部分执行完后， del lock_key 释放资源</li>
+</ol>
+<p>这样一来，由于</p>
+<ul>
+<li>Key 是有生存期的，即使线程挂掉没有及时释放，但锁在一定时限内还是会自动释放，不影响后续竞争该资源的线程的执行</li>
+<li>锁的状态可以通过 Redis 的管理工具及时监控得到</li>
+<li>Redis 基于内存，读写效率都很快</li>
+<li>Redis 本身就是单线程模型的实现，比手动在程序中实现单例的锁更简洁</li>
+</ul>
+            </div>
+            <!-- /.entry-content -->
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3 well well-sm" id="sidebar">
+
+<aside>
+    <section>
+        <ul class="list-group list-group-flush">
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+                  <ul class="list-group" id="social">
+                    <li class="list-group-item"><a href="https://twitter.com/vc2tea"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+                  </ul>
+                </li>
+
+
+
+                <li class="list-group-item"><a href="/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                    <ul class="list-group " id="tags">
+                        <li class="list-group-item tag-1">
+                            <a href="/tag/redis.html">
+                                redis
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="/tag/nginx.html">
+                                nginx
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/nodejs.html">
+                                nodejs
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/virtualenv.html">
+                                virtualenv
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/security.html">
+                                security
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/pip.html">
+                                pip
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/mutex.html">
+                                mutex
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/gfw.html">
+                                gfw
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/uwsgi.html">
+                                uwsgi
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/python.html">
+                                python
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/django.html">
+                                django
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/ghost.html">
+                                ghost
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/pillow.html">
+                                pillow
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/cache.html">
+                                cache
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/session.html">
+                                session
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="/tag/shadowsocks.html">
+                                shadowsocks
+                            </a>
+                        </li>
+                    </ul>
+                </li>    
+
+
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://getpelican.com/" target="_blank">
+                Pelican
+            </a>
+        </li>
+      </ul>
+    </li>
+
+        </ul>
+    </section>
+
+</aside>        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2014 綠茶
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="/theme/js/respond.min.js"></script>
+
+</body>
+</html>
