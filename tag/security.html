@@ -68,14 +68,14 @@
         <div class="col-sm-9">
 
             <article>
-                <h2><a href="http://vc2tea.com/redis-session/">用 Redis 模拟 session</a></h2>
+                <h2><a href="http://vc2tea.com/redis-session">用 Redis 模拟 session</a></h2>
                 <div class="summary"><p><a href="http://redis.io/">Redis</a> 是一个强大而简单的键值型数据库，之前在公司网站改版的过程中大量使用 Redis 来处理一些特殊的需求，我希望能将自己对 Redis 的使用经验都分享出来，而这里算是第一篇吧。</p>
 <h3>背景</h3>
 <p>项目是一个有着不小访问量的网站，为了达到分流的作用，网站按照不同的业务（个人、企业、后台、营销、搜索、API等）区分成不同的子域名，而子域名下运行的是不同的实例。</p>
 <p>对用户登录这块的逻辑，原来的做法是将登录的明文信息（登录ID、用户名、姓名等）在登录过程中直接写入用户 cookie，当需要进行登录校验的时候，后台直接取出 cookie 中保存的ID进行处理。可以想象，这样的模式只要模拟或者盗取了客户端的 cookie 信息，对于客户来说几乎没有任何安全性的保障。</p>
 <p>由于用户的操作可能跨越多个实例，如果采用服务器 session 的机制的话，就需要解决 session 的共享问题，从技术的实现角度来说可能碰到的坑就更多了，于是我们利用了 Redis 来模拟服务器的 session。</p>
 <h3>实际设计 ...</h3>
-                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/redis-session/">more ...</a>
+                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/redis-session">more ...</a>
                 </div>
             </article>
             <hr/>
@@ -107,8 +107,8 @@
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/nodejs.html">
-                                nodejs
+                            <a href="http://vc2tea.com/tag/pillow.html">
+                                pillow
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
@@ -117,23 +117,8 @@
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/python.html">
-                                python
-                            </a>
-                        </li>
-                        <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/uwsgi.html">
-                                uwsgi
-                            </a>
-                        </li>
-                        <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/security.html">
-                                security
-                            </a>
-                        </li>
-                        <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/pip.html">
-                                pip
+                            <a href="http://vc2tea.com/tag/nodejs.html">
+                                nodejs
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
@@ -147,8 +132,8 @@
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/shadowsocks.html">
-                                shadowsocks
+                            <a href="http://vc2tea.com/tag/cache.html">
+                                cache
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
@@ -157,8 +142,18 @@
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/pillow.html">
-                                pillow
+                            <a href="http://vc2tea.com/tag/security.html">
+                                security
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://vc2tea.com/tag/uwsgi.html">
+                                uwsgi
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://vc2tea.com/tag/python.html">
+                                python
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
@@ -167,13 +162,18 @@
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/django.html">
-                                django
+                            <a href="http://vc2tea.com/tag/shadowsocks.html">
+                                shadowsocks
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/cache.html">
-                                cache
+                            <a href="http://vc2tea.com/tag/pip.html">
+                                pip
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://vc2tea.com/tag/django.html">
+                                django
                             </a>
                         </li>
                     </ul>

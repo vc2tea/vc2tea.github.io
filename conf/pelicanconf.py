@@ -55,5 +55,3 @@ CATEGORY_URL = 'category/{slug}'
 CATEGORY_SAVE_AS = 'category/{slug}.html'
 TAG_URL = 'tag/{slug}'
 TAG_SAVE_AS = 'tag/{slug}.html'
-
-DISQUS_SITENAME = "vc2tea"

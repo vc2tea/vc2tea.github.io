@@ -70,7 +70,7 @@
         <div class="col-sm-9">
 
             <article>
-                <h2><a href="http://vc2tea.com/whats-shadowsocks/">写给非专业人士看的 Shadowsocks 简介</a></h2>
+                <h2><a href="http://vc2tea.com/whats-shadowsocks">写给非专业人士看的 Shadowsocks 简介</a></h2>
                 <div class="summary"><p>这个文章来源于一个朋友在科学上网的过程中，搞不清楚 Shadowsocks 的配置问题，在这里我想按照我对 Shadowsocks 的理解简单梳理一下，以便一些非专业人士也能了解</p>
 <h3>long long ago...</h3>
 <p>在很久很久以前，我们访问各种网站都是简单而直接的，用户的请求通过互联网发送到服务提供方，服务提供方直接将信息反馈给用户
@@ -81,12 +81,12 @@
 <h3>ssh tunnel</h3>
 <p>聪明的人们想到了利用境外服务器代理的方法来绕过 GFW 的过滤，其中包含了各种HTTP代理服务、Socks服务、VPN服务... 其中以 ssh tunnel 的方法比较有代表性</p>
 <p>1) 首先用户和境外服务器基于 ssh 建立起一条加密的通道 ...</p>
-                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/whats-shadowsocks/">more ...</a>
+                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/whats-shadowsocks">more ...</a>
                 </div>
             </article>
             <hr/>
             <article>
-                <h2><a href="http://vc2tea.com/redis-static-file-cache/">用 Redis 缓存静态文件</a></h2>
+                <h2><a href="http://vc2tea.com/redis-static-file-cache">用 Redis 缓存静态文件</a></h2>
                 <div class="summary"><p>一般网站为了缓解服务器的资源消耗，会将一些包含动态内容并且访问量特别大的页面（比如首页），采用静态化的手段来进行优化。</p>
 <p>最传统的做法就是通过定期执行的后台进程，将动态内容抓取出来，生成一个 html / inc 文件存放在文件系统中，然后在首页中用各种语言的 include 语法将静态的内容包含进去。</p>
 <p>这种做法存在以下几个问题：</p>
@@ -101,12 +101,12 @@
 <li>还是采用后台程序将动态的内容静态化，但是这次静态化的目标不是生成静态文件，而是将静态文件的内容保存在 Redis 中</li>
 <li>给生成的 Redis 内容加上一个合理的生存期，比如这个静态内容是每天生成的，可以设置生存期为5天，如果这个内容确实是活的话，那进程会一直保证这个内容是存在的，一旦进程被废弃掉了，内容在5天后也会自动被清理掉，无需人工干预</li>
 <li>页面中不再采用 include 的方式，而是直接读取对应 Redis ...</li></ol>
-                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/redis-static-file-cache/">more ...</a>
+                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/redis-static-file-cache">more ...</a>
                 </div>
             </article>
             <hr/>
             <article>
-                <h2><a href="http://vc2tea.com/redis-mutex/">用 Redis 实现互斥锁</a></h2>
+                <h2><a href="http://vc2tea.com/redis-mutex">用 Redis 实现互斥锁</a></h2>
                 <div class="summary"><p>在<a href="http://zh.wikipedia.org/wiki/多线程">多线程</a>执行的程序下，无可避免的会遇到资源竞争的问题，为了解决资源竞争的问题，引入<a href="http://zh.wikipedia.org/wiki/互斥锁">互斥锁</a>应该是公认的解决方案吧，而 Redis 的特性（基于内存，有生存期）我觉得非常适合用来实现互斥锁。</p>
 <h3>背景</h3>
 <p>我遇到的问题是在对 <a href="https://lucene.apache.org">Lucene</a> 更新索引的时候，原来采取的策略是将某个数据表增量的数据通过一个线程定期去更新和 flush 索引文件，但由于业务的扩展，原来的业务变成了从2个不同的数据表用2个不同的定期线程去更新。</p>
@@ -118,24 +118,24 @@
 <li>如果使用程序全局变量的锁又无法很好地管理和监测</li>
 </ul>
 <p>而利用 Redis ...</p>
-                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/redis-mutex/">more ...</a>
+                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/redis-mutex">more ...</a>
                 </div>
             </article>
             <hr/>
             <article>
-                <h2><a href="http://vc2tea.com/redis-session/">用 Redis 模拟 session</a></h2>
+                <h2><a href="http://vc2tea.com/redis-session">用 Redis 模拟 session</a></h2>
                 <div class="summary"><p><a href="http://redis.io/">Redis</a> 是一个强大而简单的键值型数据库，之前在公司网站改版的过程中大量使用 Redis 来处理一些特殊的需求，我希望能将自己对 Redis 的使用经验都分享出来，而这里算是第一篇吧。</p>
 <h3>背景</h3>
 <p>项目是一个有着不小访问量的网站，为了达到分流的作用，网站按照不同的业务（个人、企业、后台、营销、搜索、API等）区分成不同的子域名，而子域名下运行的是不同的实例。</p>
 <p>对用户登录这块的逻辑，原来的做法是将登录的明文信息（登录ID、用户名、姓名等）在登录过程中直接写入用户 cookie，当需要进行登录校验的时候，后台直接取出 cookie 中保存的ID进行处理。可以想象，这样的模式只要模拟或者盗取了客户端的 cookie 信息，对于客户来说几乎没有任何安全性的保障。</p>
 <p>由于用户的操作可能跨越多个实例，如果采用服务器 session 的机制的话，就需要解决 session 的共享问题，从技术的实现角度来说可能碰到的坑就更多了，于是我们利用了 Redis 来模拟服务器的 session。</p>
 <h3>实际设计 ...</h3>
-                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/redis-session/">more ...</a>
+                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/redis-session">more ...</a>
                 </div>
             </article>
             <hr/>
             <article>
-                <h2><a href="http://vc2tea.com/django-maintain/">Django 项目维护记</a></h2>
+                <h2><a href="http://vc2tea.com/django-maintain">Django 项目维护记</a></h2>
                 <div class="summary"><p>近来由于工作需要，所以需要接手几个用 <a href="https://www.djangoproject.com">Django</a> 编写的网站项目，虽然一直对 <a href="https://www.python.org/">Python</a> 有好感，但毕竟作为工作上的项目还是真正的第一次接触，其中遇到了一些问题总算花了几天的时间搞清楚了，在此分享一下</p>
 <h3>pip 和 virtualenv</h3>
 <p><a href="https://pip.pypa.io/en/latest/">pip</a> 已经作为 Python 的标准包管理工具了，安装自不用说，这里说一下全局配置中的 download cache，创建 <code>~/.pip/pip.conf</code> 文件，内容为</p>
@@ -148,7 +148,7 @@
 <p><a href="http://virtualenv.readthedocs.org/en/latest/">virtualenv</a> 也是大名鼎鼎的虚拟环境工具了，在同一台机器上运行多个环境，为了避免第三方包的冲突，将第三方包的环境隔离出来管理更方便，用处基本上是这几个</p>
 <div class="highlight"><pre>~/.virtualenvs/virtualenv env_name
 source ~/.virtualenvs/env_name/bin ...</pre></div>
-                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/django-maintain/">more ...</a>
+                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/django-maintain">more ...</a>
                 </div>
             </article>
             <hr/>
@@ -189,8 +189,8 @@ source ~/.virtualenvs/env_name/bin ...</pre></div>
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/nodejs.html">
-                                nodejs
+                            <a href="http://vc2tea.com/tag/pillow.html">
+                                pillow
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
@@ -199,23 +199,8 @@ source ~/.virtualenvs/env_name/bin ...</pre></div>
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/python.html">
-                                python
-                            </a>
-                        </li>
-                        <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/uwsgi.html">
-                                uwsgi
-                            </a>
-                        </li>
-                        <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/security.html">
-                                security
-                            </a>
-                        </li>
-                        <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/pip.html">
-                                pip
+                            <a href="http://vc2tea.com/tag/nodejs.html">
+                                nodejs
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
@@ -229,8 +214,8 @@ source ~/.virtualenvs/env_name/bin ...</pre></div>
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/shadowsocks.html">
-                                shadowsocks
+                            <a href="http://vc2tea.com/tag/cache.html">
+                                cache
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
@@ -239,8 +224,18 @@ source ~/.virtualenvs/env_name/bin ...</pre></div>
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/pillow.html">
-                                pillow
+                            <a href="http://vc2tea.com/tag/security.html">
+                                security
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://vc2tea.com/tag/uwsgi.html">
+                                uwsgi
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://vc2tea.com/tag/python.html">
+                                python
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
@@ -249,13 +244,18 @@ source ~/.virtualenvs/env_name/bin ...</pre></div>
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/django.html">
-                                django
+                            <a href="http://vc2tea.com/tag/shadowsocks.html">
+                                shadowsocks
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/cache.html">
-                                cache
+                            <a href="http://vc2tea.com/tag/pip.html">
+                                pip
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://vc2tea.com/tag/django.html">
+                                django
                             </a>
                         </li>
                     </ul>

@@ -20,5 +20,5 @@ DELETE_OUTPUT_DIRECTORY = True
 
 # Following items are often useful when publishing
 
-#DISQUS_SITENAME = "vc2tea"
+DISQUS_SITENAME = "vc2tea"
 #GOOGLE_ANALYTICS = ""

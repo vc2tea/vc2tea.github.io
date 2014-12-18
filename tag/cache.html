@@ -68,7 +68,7 @@
         <div class="col-sm-9">
 
             <article>
-                <h2><a href="http://vc2tea.com/redis-static-file-cache/">用 Redis 缓存静态文件</a></h2>
+                <h2><a href="http://vc2tea.com/redis-static-file-cache">用 Redis 缓存静态文件</a></h2>
                 <div class="summary"><p>一般网站为了缓解服务器的资源消耗，会将一些包含动态内容并且访问量特别大的页面（比如首页），采用静态化的手段来进行优化。</p>
 <p>最传统的做法就是通过定期执行的后台进程，将动态内容抓取出来，生成一个 html / inc 文件存放在文件系统中，然后在首页中用各种语言的 include 语法将静态的内容包含进去。</p>
 <p>这种做法存在以下几个问题：</p>
@@ -83,7 +83,7 @@
 <li>还是采用后台程序将动态的内容静态化，但是这次静态化的目标不是生成静态文件，而是将静态文件的内容保存在 Redis 中</li>
 <li>给生成的 Redis 内容加上一个合理的生存期，比如这个静态内容是每天生成的，可以设置生存期为5天，如果这个内容确实是活的话，那进程会一直保证这个内容是存在的，一旦进程被废弃掉了，内容在5天后也会自动被清理掉，无需人工干预</li>
 <li>页面中不再采用 include 的方式，而是直接读取对应 Redis ...</li></ol>
-                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/redis-static-file-cache/">more ...</a>
+                    <a class="btn btn-default btn-xs" href="http://vc2tea.com/redis-static-file-cache">more ...</a>
                 </div>
             </article>
             <hr/>
@@ -115,8 +115,8 @@
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/nodejs.html">
-                                nodejs
+                            <a href="http://vc2tea.com/tag/pillow.html">
+                                pillow
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
@@ -125,23 +125,8 @@
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/python.html">
-                                python
-                            </a>
-                        </li>
-                        <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/uwsgi.html">
-                                uwsgi
-                            </a>
-                        </li>
-                        <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/security.html">
-                                security
-                            </a>
-                        </li>
-                        <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/pip.html">
-                                pip
+                            <a href="http://vc2tea.com/tag/nodejs.html">
+                                nodejs
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
@@ -155,8 +140,8 @@
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/shadowsocks.html">
-                                shadowsocks
+                            <a href="http://vc2tea.com/tag/cache.html">
+                                cache
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
@@ -165,8 +150,18 @@
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/pillow.html">
-                                pillow
+                            <a href="http://vc2tea.com/tag/security.html">
+                                security
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://vc2tea.com/tag/uwsgi.html">
+                                uwsgi
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://vc2tea.com/tag/python.html">
+                                python
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
@@ -175,13 +170,18 @@
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/django.html">
-                                django
+                            <a href="http://vc2tea.com/tag/shadowsocks.html">
+                                shadowsocks
                             </a>
                         </li>
                         <li class="list-group-item tag-4">
-                            <a href="http://vc2tea.com/tag/cache.html">
-                                cache
+                            <a href="http://vc2tea.com/tag/pip.html">
+                                pip
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://vc2tea.com/tag/django.html">
+                                django
                             </a>
                         </li>
                     </ul>
