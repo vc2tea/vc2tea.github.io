@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>綠茶如是说</title><link href="http://vc2tea.com/" rel="alternate"></link><link href="http://vc2tea.com/feeds/blog.atom.xml" rel="self"></link><id>http://vc2tea.com/</id><updated>2014-09-22T10:33:00+08:00</updated><entry><title>写给非专业人士看的 Shadowsocks 简介</title><link href="http://vc2tea.com/whats-shadowsocks" rel="alternate"></link><updated>2014-09-22T10:33:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-09-22:whats-shadowsocks</id><summary type="html">&lt;p&gt;这个文章来源于一个朋友在科学上网的过程中，搞不清楚 Shadowsocks 的配置问题，在这里我想按照我对 Shadowsocks 的理解简单梳理一下，以便一些非专业人士也能了解&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>綠茶如是说</title><link href="http://vc2tea.com/" rel="alternate"></link><link href="http://vc2tea.com/feeds/blog.atom.xml" rel="self"></link><id>http://vc2tea.com/</id><updated>2014-09-22T10:33:00+08:00</updated><entry><title>写给非专业人士看的 Shadowsocks 简介</title><link href="http://vc2tea.com/whats-shadowsocks/" rel="alternate"></link><updated>2014-09-22T10:33:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-09-22:whats-shadowsocks/</id><summary type="html">&lt;p&gt;这个文章来源于一个朋友在科学上网的过程中，搞不清楚 Shadowsocks 的配置问题，在这里我想按照我对 Shadowsocks 的理解简单梳理一下，以便一些非专业人士也能了解&lt;/p&gt;
 &lt;h3&gt;long long ago...&lt;/h3&gt;
 &lt;p&gt;在很久很久以前，我们访问各种网站都是简单而直接的，用户的请求通过互联网发送到服务提供方，服务提供方直接将信息反馈给用户
 &lt;img alt="ss-01" src="/static/images/whats-shadowsocks-01.png" /&gt;&lt;/p&gt;
@@ -20,7 +20,7 @@
 &lt;p&gt;1、6) 客户端发出的请求基于 Socks5 协议跟 ss-local 端进行通讯，由于这个 ss-local 一般是本机或路由器或局域网的其他机器，不经过 GFW，所以解决了上面被 GFW 通过特征分析进行干扰的问题
 2、5) ss-local 和 ss-server 两端通过多种可选的加密方法进行通讯，经过 GFW 的时候是常规的TCP包，没有明显的特征码而且 GFW 也无法对通讯数据进行解密
 3、4) ss-server 将收到的加密数据进行解密，还原原来的请求，再发送到用户需要访问的服务，获取响应原路返回
-&lt;img alt="ss-04" src="/static/images/whats-shadowsocks-04.png" /&gt;&lt;/p&gt;</summary><category term="shadowsocks"></category><category term="gfw"></category></entry><entry><title>用 Redis 缓存静态文件</title><link href="http://vc2tea.com/redis-static-file-cache" rel="alternate"></link><updated>2014-09-07T00:46:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-09-07:redis-static-file-cache</id><summary type="html">&lt;p&gt;一般网站为了缓解服务器的资源消耗，会将一些包含动态内容并且访问量特别大的页面（比如首页），采用静态化的手段来进行优化。&lt;/p&gt;
+&lt;img alt="ss-04" src="/static/images/whats-shadowsocks-04.png" /&gt;&lt;/p&gt;</summary><category term="shadowsocks"></category><category term="gfw"></category></entry><entry><title>用 Redis 缓存静态文件</title><link href="http://vc2tea.com/redis-static-file-cache/" rel="alternate"></link><updated>2014-09-07T00:46:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-09-07:redis-static-file-cache/</id><summary type="html">&lt;p&gt;一般网站为了缓解服务器的资源消耗，会将一些包含动态内容并且访问量特别大的页面（比如首页），采用静态化的手段来进行优化。&lt;/p&gt;
 &lt;p&gt;最传统的做法就是通过定期执行的后台进程，将动态内容抓取出来，生成一个 html / inc 文件存放在文件系统中，然后在首页中用各种语言的 include 语法将静态的内容包含进去。&lt;/p&gt;
 &lt;p&gt;这种做法存在以下几个问题：&lt;/p&gt;
 &lt;ul&gt;
@@ -35,7 +35,7 @@
 &lt;li&gt;给生成的 Redis 内容加上一个合理的生存期，比如这个静态内容是每天生成的，可以设置生存期为5天，如果这个内容确实是活的话，那进程会一直保证这个内容是存在的，一旦进程被废弃掉了，内容在5天后也会自动被清理掉，无需人工干预&lt;/li&gt;
 &lt;li&gt;页面中不再采用 include 的方式，而是直接读取对应 Redis 的内容并拼接在原页面内容中，当 Redis 的内容不存在时返回空字符串，这样页面最多只会留空没有内容的位置，而不会导致整个页面报错&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;当然这样直接就解决了服务器文件同步的问题了，并且由于是基于内存读取，比起读取文件IO的效率又进一步提升了。&lt;/p&gt;</summary><category term="redis"></category><category term="cache"></category></entry><entry><title>用 Redis 实现互斥锁</title><link href="http://vc2tea.com/redis-mutex" rel="alternate"></link><updated>2014-09-03T07:46:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-09-03:redis-mutex</id><summary type="html">&lt;p&gt;在&lt;a href="http://zh.wikipedia.org/wiki/多线程"&gt;多线程&lt;/a&gt;执行的程序下，无可避免的会遇到资源竞争的问题，为了解决资源竞争的问题，引入&lt;a href="http://zh.wikipedia.org/wiki/互斥锁"&gt;互斥锁&lt;/a&gt;应该是公认的解决方案吧，而 Redis 的特性（基于内存，有生存期）我觉得非常适合用来实现互斥锁。&lt;/p&gt;
+&lt;p&gt;当然这样直接就解决了服务器文件同步的问题了，并且由于是基于内存读取，比起读取文件IO的效率又进一步提升了。&lt;/p&gt;</summary><category term="redis"></category><category term="cache"></category></entry><entry><title>用 Redis 实现互斥锁</title><link href="http://vc2tea.com/redis-mutex/" rel="alternate"></link><updated>2014-09-03T07:46:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-09-03:redis-mutex/</id><summary type="html">&lt;p&gt;在&lt;a href="http://zh.wikipedia.org/wiki/多线程"&gt;多线程&lt;/a&gt;执行的程序下，无可避免的会遇到资源竞争的问题，为了解决资源竞争的问题，引入&lt;a href="http://zh.wikipedia.org/wiki/互斥锁"&gt;互斥锁&lt;/a&gt;应该是公认的解决方案吧，而 Redis 的特性（基于内存，有生存期）我觉得非常适合用来实现互斥锁。&lt;/p&gt;
 &lt;h3&gt;背景&lt;/h3&gt;
 &lt;p&gt;我遇到的问题是在对 &lt;a href="https://lucene.apache.org"&gt;Lucene&lt;/a&gt; 更新索引的时候，原来采取的策略是将某个数据表增量的数据通过一个线程定期去更新和 flush 索引文件，但由于业务的扩展，原来的业务变成了从2个不同的数据表用2个不同的定期线程去更新。&lt;/p&gt;
 &lt;p&gt;这个时候问题来了，在 flush 到文件系统中的时候，虽然 Lucene 本身创建了一个 &lt;code&gt;write.lock&lt;/code&gt; 来避免文件冲突，但是由于线程中运行的程序在 flush 过程中可能因为异常导致线程直接中断，导致 &lt;code&gt;write.lock&lt;/code&gt; 文件没有被及时清除和处理，后续的索引更新线程全部作废。&lt;/p&gt;
@@ -57,7 +57,7 @@
 &lt;li&gt;锁的状态可以通过 Redis 的管理工具及时监控得到&lt;/li&gt;
 &lt;li&gt;Redis 基于内存，读写效率都很快&lt;/li&gt;
 &lt;li&gt;Redis 本身就是单线程模型的实现，比手动在程序中实现单例的锁更简洁&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="redis"></category><category term="mutex"></category></entry><entry><title>用 Redis 模拟 session</title><link href="http://vc2tea.com/redis-session" rel="alternate"></link><updated>2014-09-01T00:07:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-09-01:redis-session</id><summary type="html">&lt;p&gt;&lt;a href="http://redis.io/"&gt;Redis&lt;/a&gt; 是一个强大而简单的键值型数据库，之前在公司网站改版的过程中大量使用 Redis 来处理一些特殊的需求，我希望能将自己对 Redis 的使用经验都分享出来，而这里算是第一篇吧。&lt;/p&gt;
+&lt;/ul&gt;</summary><category term="redis"></category><category term="mutex"></category></entry><entry><title>用 Redis 模拟 session</title><link href="http://vc2tea.com/redis-session/" rel="alternate"></link><updated>2014-09-01T00:07:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-09-01:redis-session/</id><summary type="html">&lt;p&gt;&lt;a href="http://redis.io/"&gt;Redis&lt;/a&gt; 是一个强大而简单的键值型数据库，之前在公司网站改版的过程中大量使用 Redis 来处理一些特殊的需求，我希望能将自己对 Redis 的使用经验都分享出来，而这里算是第一篇吧。&lt;/p&gt;
 &lt;h3&gt;背景&lt;/h3&gt;
 &lt;p&gt;项目是一个有着不小访问量的网站，为了达到分流的作用，网站按照不同的业务（个人、企业、后台、营销、搜索、API等）区分成不同的子域名，而子域名下运行的是不同的实例。&lt;/p&gt;
 &lt;p&gt;对用户登录这块的逻辑，原来的做法是将登录的明文信息（登录ID、用户名、姓名等）在登录过程中直接写入用户 cookie，当需要进行登录校验的时候，后台直接取出 cookie 中保存的ID进行处理。可以想象，这样的模式只要模拟或者盗取了客户端的 cookie 信息，对于客户来说几乎没有任何安全性的保障。&lt;/p&gt;
@@ -90,7 +90,7 @@
 &lt;li&gt;token 即使被盗用了并被有意进行模仿，如果不是完全按照客户登录时的IP、浏览器信息来进行模拟的话，基本无法获取到客户的信息&lt;/li&gt;
 &lt;li&gt;常用的信息保存在 Redis 中，由于直接读取了内存，比起持久化的数据库查询，读取速度快了很多，减少了负载同时提升了访问效率&lt;/li&gt;
 &lt;li&gt;Redis 中的内容设定了生存时间，当有效期内执行操作重置时间这样的机制模拟了 session timeout，这样也能进一步保证用户的数据安全性&lt;/li&gt;
-&lt;/ul&gt;</summary><category term="redis"></category><category term="session"></category><category term="security"></category></entry><entry><title>Django 项目维护记</title><link href="http://vc2tea.com/django-maintain" rel="alternate"></link><updated>2014-08-14T00:36:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-08-14:django-maintain</id><summary type="html">&lt;p&gt;近来由于工作需要，所以需要接手几个用 &lt;a href="https://www.djangoproject.com"&gt;Django&lt;/a&gt; 编写的网站项目，虽然一直对 &lt;a href="https://www.python.org/"&gt;Python&lt;/a&gt; 有好感，但毕竟作为工作上的项目还是真正的第一次接触，其中遇到了一些问题总算花了几天的时间搞清楚了，在此分享一下&lt;/p&gt;
+&lt;/ul&gt;</summary><category term="redis"></category><category term="session"></category><category term="security"></category></entry><entry><title>Django 项目维护记</title><link href="http://vc2tea.com/django-maintain/" rel="alternate"></link><updated>2014-08-14T00:36:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-08-14:django-maintain/</id><summary type="html">&lt;p&gt;近来由于工作需要，所以需要接手几个用 &lt;a href="https://www.djangoproject.com"&gt;Django&lt;/a&gt; 编写的网站项目，虽然一直对 &lt;a href="https://www.python.org/"&gt;Python&lt;/a&gt; 有好感，但毕竟作为工作上的项目还是真正的第一次接触，其中遇到了一些问题总算花了几天的时间搞清楚了，在此分享一下&lt;/p&gt;
 &lt;h3&gt;pip 和 virtualenv&lt;/h3&gt;
 &lt;p&gt;&lt;a href="https://pip.pypa.io/en/latest/"&gt;pip&lt;/a&gt; 已经作为 Python 的标准包管理工具了，安装自不用说，这里说一下全局配置中的 download cache，创建 &lt;code&gt;~/.pip/pip.conf&lt;/code&gt; 文件，内容为&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[global]&lt;/span&gt;
@@ -160,7 +160,7 @@ deactivate
 &lt;li&gt;生成的 static 目录是否有读取权限？由于设置给 nginx 代理静态文件，所以起码 nginx 用户需要有对 static 及子目录有读取权限，chmod 处理一下&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3&gt;网站无法打开&lt;/h3&gt;
-&lt;p&gt;这也是第一次处理 Django 没有注意到的地方，正式部署后只能通过 settings 中 &lt;code&gt;ALLOWED_HOSTS&lt;/code&gt; 配置的域名才能访问，修改一下配置或在要访问的客户机中在调整一下 hosts 即可&lt;/p&gt;</summary><category term="django"></category><category term="python"></category><category term="uwsgi"></category><category term="nginx"></category><category term="pip"></category><category term="virtualenv"></category><category term="pillow"></category></entry><entry><title>Ghost Blogging</title><link href="http://vc2tea.com/ghost-blogging" rel="alternate"></link><updated>2014-08-11T18:28:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-08-11:ghost-blogging</id><summary type="html">&lt;p&gt;&lt;a href="http://docs.ghost.org/"&gt;Ghost&lt;/a&gt; 是基于 &lt;a href="http://nodejs.org/"&gt;Node.js&lt;/a&gt; 的博客系统，这个博客就是利用 Ghost 搭建的，详细的介绍就不写了，下面记录下相关的流程，算是备忘&lt;/p&gt;
+&lt;p&gt;这也是第一次处理 Django 没有注意到的地方，正式部署后只能通过 settings 中 &lt;code&gt;ALLOWED_HOSTS&lt;/code&gt; 配置的域名才能访问，修改一下配置或在要访问的客户机中在调整一下 hosts 即可&lt;/p&gt;</summary><category term="django"></category><category term="python"></category><category term="uwsgi"></category><category term="nginx"></category><category term="pip"></category><category term="virtualenv"></category><category term="pillow"></category></entry><entry><title>Ghost Blogging</title><link href="http://vc2tea.com/ghost-blogging/" rel="alternate"></link><updated>2014-08-11T18:28:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-08-11:ghost-blogging/</id><summary type="html">&lt;p&gt;&lt;a href="http://docs.ghost.org/"&gt;Ghost&lt;/a&gt; 是基于 &lt;a href="http://nodejs.org/"&gt;Node.js&lt;/a&gt; 的博客系统，这个博客就是利用 Ghost 搭建的，详细的介绍就不写了，下面记录下相关的流程，算是备忘&lt;/p&gt;
 &lt;p&gt;首先肯定是安装 Node.js 环境，由于我用的是 debian 7.5，所以将 Node.js 的 source list 加进来并安装，当然还有 sqlite 3&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;curl -sL https://deb.nodesource.com/setup | sudo bash -
 apt-get install nodejs
@@ -195,7 +195,7 @@ sudo apt-get -t testing install libc6-dev
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Then , enjoy yourself !&lt;/p&gt;</summary><category term="ghost"></category><category term="nginx"></category><category term="nodejs"></category></entry><entry><title>綠茶，你还想说什么？</title><link href="http://vc2tea.com/first" rel="alternate"></link><updated>2014-08-10T00:14:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-08-10:first</id><summary type="html">&lt;p&gt;重新开 Blog，按照惯例，免不了有些碎碎念，姑且记录下来吧。&lt;/p&gt;
+&lt;p&gt;Then , enjoy yourself !&lt;/p&gt;</summary><category term="ghost"></category><category term="nginx"></category><category term="nodejs"></category></entry><entry><title>綠茶，你还想说什么？</title><link href="http://vc2tea.com/first/" rel="alternate"></link><updated>2014-08-10T00:14:00+08:00</updated><author><name>綠茶</name></author><id>tag:vc2tea.com,2014-08-10:first/</id><summary type="html">&lt;p&gt;重新开 Blog，按照惯例，免不了有些碎碎念，姑且记录下来吧。&lt;/p&gt;
 &lt;p&gt;算了一下这已经是纯属个人胡言乱语的第4个 Blog 了，她的前辈们到底经历了一些什么东西呢，让我再好好回想一下黑历史&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;06-07年，正值毕业季的当时写博客大概是一种潮流吧，于是在 Blogcn 上也凑了下热闹，记录下毕业的青涩和刚入职场的点点滴滴，可惜 Blogcn 历经多次变更，最原始的这些内容早已经不存在于比特世界了吧&lt;/li&gt;
