@@ -7,7 +7,7 @@ tags: [redis, session, security]
 
 [Redis](http://redis.io/) 是一个强大而简单的键值型数据库，之前在公司网站改版的过程中大量使用 Redis 来处理一些特殊的需求，我希望能将自己对 Redis 的使用经验都分享出来，而这里算是第一篇吧。
 
-### 背景
+## 背景
 
 项目是一个有着不小访问量的网站，为了达到分流的作用，网站按照不同的业务（个人、企业、后台、营销、搜索、API等）区分成不同的子域名，而子域名下运行的是不同的实例。
 
@@ -15,9 +15,9 @@ tags: [redis, session, security]
 
 由于用户的操作可能跨越多个实例，如果采用服务器 session 的机制的话，就需要解决 session 的共享问题，从技术的实现角度来说可能碰到的坑就更多了，于是我们利用了 Redis 来模拟服务器的 session。
 
-### 实际设计
+## 实际设计
 
-![图1](/static/images/redis-session-01.png)
+![图1](/public/upload/redis-session-01.png)
 
 登录流程见图1
 
@@ -25,7 +25,7 @@ tags: [redis, session, security]
 2. Web Server 首先跟进行用户信息验证，当验证通过的时候，根据用户的客户端信息（IP、浏览器信息等）进行散列，形成一个 token，这个 token 将会是 Redis 中的 Key，同时将经常需要获取的内容（用户ID、姓名等）组装成 Value，根据需要可以是 json 格式或者 HashTable，然后设定一个 expire time 保存进 Redis
 3. 将生成的 token 保存在用户的浏览器 cookie 中
 
-![图2](/static/images/redis-session-02.png)
+![图2](/public/upload/redis-session-02.png)
 
 验证流程见图2
 
@@ -36,7 +36,7 @@ tags: [redis, session, security]
     * Value 中保存的内容是否和当前操作匹配（用户ID是否和当前处理的ID，或者如果将IP等信息放到内容中也可以将上一条的验证在这里处理）
 4. 所有验证通过则将正常的结果返回给用户，有需要的话还可以在这个过程中重置或延长原来 Redis key 的生存时间
 
-### 这样做解决了什么问题？
+## 这样做解决了什么问题？
 
 其实这是一个很简单的思路，将客户登录验证和客户信息获取这两部分内容合并到 Redis 中来进行处理了
 
