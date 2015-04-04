@@ -7,15 +7,15 @@ tags: [shadowsocks, gfw]
 
 这个文章来源于一个朋友在科学上网的过程中，搞不清楚 Shadowsocks 的配置问题，在这里我想按照我对 Shadowsocks 的理解简单梳理一下，以便一些非专业人士也能了解
 
-### long long ago...
+## long long ago...
 在很久很久以前，我们访问各种网站都是简单而直接的，用户的请求通过互联网发送到服务提供方，服务提供方直接将信息反馈给用户
 ![ss-01](/public/upload/whats-shadowsocks-01.png)
 
-### when evil comes
+## when evil comes
 然后有一天，[GFW](http://zh.wikipedia.org/wiki/%E9%87%91%E7%9B%BE%E5%B7%A5%E7%A8%8B) 就出现了，他像一个收过路费的强盗一样夹在了在用户和服务之间，每当用户需要获取信息，都经过了 GFW，GFW将它不喜欢的内容统统过滤掉，于是客户当触发 GFW 的过滤规则的时候，就会收到 `Connection Reset` 这样的响应内容，而无法接收到正常的内容
 ![ss-02](/public/upload/whats-shadowsocks-02.png)
 
-### ssh tunnel
+## ssh tunnel
 聪明的人们想到了利用境外服务器代理的方法来绕过 GFW 的过滤，其中包含了各种HTTP代理服务、Socks服务、VPN服务... 其中以 ssh tunnel 的方法比较有代表性
 
 1) 首先用户和境外服务器基于 ssh 建立起一条加密的通道
@@ -27,7 +27,7 @@ tags: [shadowsocks, gfw]
 由于 ssh 本身就是基于 RSA 加密技术，所以 GFW 无法从数据传输的过程中的加密数据内容进行关键词分析，避免了被重置链接的问题，但由于创建隧道和数据传输的过程中，ssh 本身的特征是明显的，所以 GFW 一度通过分析连接的特征进行干扰，导致 ssh
 存在被定向进行干扰的问题
 
-### shadowsocks
+## shadowsocks
 
 于是 [clowwindy](https://github.com/clowwindy/shadowsocks) 同学分享并开源了他的[解决方案](http://www.v2ex.com/t/32777)
 
