@@ -1,6 +1,7 @@
-permalink: /:title
+permalink: /:title/
 paginate: 10
 markdown: kramdown
+highlighter: true
 
 kramdown:
   input: GFM
@@ -18,7 +19,7 @@ url: http://vc2tea.com
 rss_url: /pages/atom.xml
 
 # gavatar头像及Favicon
-gavatar: /public/img/avatar.jpg
+avatar: /public/img/avatar.jpg
 favicon: /public/img/favicon.ico
 
 # google analytics 设置
@@ -29,19 +30,3 @@ favicon: /public/img/favicon.ico
 # disqus 设置
 disqus:
   shortname: vc2tea
-
-# 主题设置，自动激活某个标签
-active: 技术
-
-# 首页除了最新文章外显示分类
-# cates: 
-#   - Python
-#   - OpenStack
-
-# 中文本地化
-locals:
-  tags: 标签
-  about: 关于
-  newest: 最新文章
-  archive: 归档
-  content: 目录
