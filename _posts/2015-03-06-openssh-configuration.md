@@ -1,7 +1,7 @@
 ---
 layout: post
 title: OpenSSH 安全配置备忘
-category: 运维
+category: 技术
 tags: [openssh, sa]
 ---
 
@@ -15,6 +15,8 @@ tags: [openssh, sa]
 在服务器修改上面2点的配置以前，我们可以先在客户端执行 `ssh-keygen`，根据具体的提示生成 RSA 的密钥对，最简单的就是一路回车
 
 将生成的公钥 `id_rsa.pub` 放到服务器需要登录的用户验证文件中，一般为 `/home/{user}/.ssh/authorized_keys`，可以将内容 `cat id_rsa.pub >> authorized_keys`，或者直接在客户端中执行 `ssh-copy-id -i id_rsa.pub {user}@{host}`，在默认的配置下客户端自动在服务器上生成相应的文件，记得客户端保留好私钥
+
+**这里需要注意的是，不管是 `authorized_keys` 还是 `id_rsa` 文件，对应的权限应该是 `600` 或者 `400` ，即除了 owner 以外其它用户都没有权限读写，否则设置无效**
 
 完成上面这步以后，可以修改服务器上的 `/etc/ssh/sshd_config` 文件了，重要的部分设置如下
 
